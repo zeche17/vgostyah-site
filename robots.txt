@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /send.php
+Disallow: /data/
+
+Host: https://xn----ctbe8bpgv3f.xn--p1ai
+Sitemap: https://xn----ctbe8bpgv3f.xn--p1ai/sitemap.xml
