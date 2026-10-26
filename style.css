@@ -71,7 +71,7 @@ section{padding:clamp(60px,8vw,112px) 0;position:relative}
 
 /* первый экран */
 .hero{background:var(--em);color:var(--pamp);padding:clamp(40px,6vw,80px) 0 clamp(90px,10vw,130px);overflow:hidden}
-.hero .w{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(24px,5vw,72px);align-items:center}
+.hero .w{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,72px);align-items:center}
 .hero h1{font-size:clamp(34px,5vw,62px);max-width:14ch;text-wrap:balance}
 .hero .lead{max-width:32em}
 .cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:30px}
@@ -85,15 +85,15 @@ section{padding:clamp(60px,8vw,112px) 0;position:relative}
 
 /* телевизор */
 .tvbox:before{content:"";position:absolute;inset:34px -26px -6px;border-radius:36px;background:var(--em) url(assets/p-green-lav-d.svg) 50% 0/330px;border:2px solid rgba(243,242,238,.18);transform:rotate(2.2deg)}
-.tvbox{position:relative;justify-self:center;width:min(100%,430px);padding:70px 0 20px}
+.tvbox{position:relative;justify-self:center;width:min(100%,560px);padding:70px 0 20px}
 .tv-ant{position:absolute;left:50%;top:0;width:150px;transform:translateX(-50%);stroke:var(--sand2);fill:none;stroke-width:4;stroke-linecap:round}
 .tv-ant circle{fill:var(--sand2);stroke:none}
-.tv-body{position:relative;display:grid;grid-template-columns:1fr 58px;gap:14px;padding:18px;border:3px solid var(--umb);border-radius:32px;background:linear-gradient(155deg,#d3a45a,#b07a37 55%,#8b5d2b);box-shadow:inset 0 3px 0 rgba(255,255,255,.35),10px 12px 0 rgba(0,0,0,.35);transform:rotate(-1.2deg)}
-.tv-screen{position:relative;aspect-ratio:9/16;border:7px solid #181816;border-radius:30px/24px;overflow:hidden;background:#000;box-shadow:inset 0 0 26px rgba(0,0,0,.9)}
+.tv-body{position:relative;display:grid;grid-template-columns:1fr 72px;gap:14px;padding:18px;border:3px solid var(--umb);border-radius:32px;background:linear-gradient(155deg,#d3a45a,#b07a37 55%,#8b5d2b);box-shadow:inset 0 3px 0 rgba(255,255,255,.35),10px 12px 0 rgba(0,0,0,.35);transform:rotate(-1.2deg)}
+.tv-screen{position:relative;aspect-ratio:4/3;border:7px solid #181816;border-radius:30px/24px;overflow:hidden;background:#000;box-shadow:inset 0 0 26px rgba(0,0,0,.9)}
 .tv-screen video{width:100%;height:100%;object-fit:cover}
 .tv-screen:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 80% at 30% 10%,rgba(255,255,255,.16),transparent 55%),repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 1px,transparent 1px 3px)}
 .tv-side{display:flex;flex-direction:column;align-items:center;gap:20px;padding:10px 0}
-.tv-grille{width:100%;flex:1;max-height:230px;border:3px solid var(--umb);border-radius:14px;background:#2d1f10;display:flex;align-items:center;justify-content:center}
+.tv-grille{width:100%;flex:1;max-height:170px;border:3px solid var(--umb);border-radius:14px;background:#2d1f10;display:flex;align-items:center;justify-content:center}
 .tv-grille svg{width:70%;height:78%;fill:var(--sand)}
 .knob{width:44px;height:44px;border-radius:50%;border:3px solid var(--umb);background:radial-gradient(circle at 35% 30%,#f6ecd7,#a08a63 72%);position:relative;padding:0;cursor:default;flex:none}
 .knob:after{content:"";position:absolute;left:50%;top:5px;width:3px;height:12px;margin-left:-1.5px;background:var(--umb);border-radius:2px}
@@ -104,9 +104,9 @@ button.knob:hover{filter:brightness(1.08)}
 .tv-feet:before,.tv-feet:after{content:"";position:absolute;bottom:6px;width:46px;height:16px;background:#2d1f10;border:3px solid var(--umb);border-radius:6px}
 .tv-feet:before{left:46px}.tv-feet:after{right:46px}
 .mascot{width:var(--mw,120px);height:auto;color:inherit}
-.hero .mascot{position:absolute;left:-104px;bottom:-6px;--mw:140px;color:var(--sand);z-index:2}
-@media(max-width:900px){.hero .mascot{left:0;--mw:100px}.tvbox{width:min(100%,340px)}}
-@media(max-width:560px){.tvbox{width:min(86%,290px);padding-top:56px}.tv-body{padding:12px;gap:10px;grid-template-columns:1fr 44px}.knob{width:34px;height:34px}}
+.hero .mascot{position:absolute;left:-124px;bottom:-6px;--mw:140px;color:var(--sand);z-index:2}
+@media(max-width:900px){.hero .mascot{left:0;--mw:100px}.tvbox{width:min(100%,480px)}}
+@media(max-width:560px){.tvbox{width:min(92%,340px);padding-top:56px}.tv-body{padding:12px;gap:10px;grid-template-columns:1fr 44px}.knob{width:34px;height:34px}}
 @media(prefers-reduced-motion:no-preference){
 .tv-screen video{animation:tvon .9s cubic-bezier(.3,.7,.2,1) .25s both}
 @keyframes tvon{0%{transform:scale(1,.004);filter:brightness(8)}40%{transform:scale(1,.004);filter:brightness(4)}100%{transform:scale(1,1);filter:brightness(1)}}
