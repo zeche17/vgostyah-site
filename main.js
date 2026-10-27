@@ -130,6 +130,11 @@ if(window.matchMedia&&matchMedia('(hover:hover) and (pointer:fine)').matches){
   masked.forEach(function(a){a.removeAttribute('title');a.removeAttribute('aria-label')});goal('phone_reveal')}
 }
 
+/* уведомление о cookie */
+var ck=$('#ck');
+if(ck){var seen=false;try{seen=localStorage.getItem('ck')==='1'}catch(e){}
+ if(!seen){ck.hidden=false;$('#ckok').addEventListener('click',function(){ck.hidden=true;try{localStorage.setItem('ck','1')}catch(e){}})}}
+
 /* заявка */
 var f=$('#lead'),status=$('#st'),intent=$('#intent'),sum=$('#sum');
 $('#ts').value=Date.now();
