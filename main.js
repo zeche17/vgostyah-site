@@ -139,6 +139,7 @@ function ckSave(v){try{localStorage.setItem('cks',v)}catch(e){}
 if(ck){
  if(!ckGet())ck.hidden=false;
  $('#ckall').addEventListener('click',function(){ckSave('all')});
+ $('#cknone').addEventListener('click',function(){ckSave('none')});
  
  $('#cksel').addEventListener('click',function(){
   if(ckset.hidden){ckset.hidden=false;ckstat.checked=ckGet()==='all'||ckGet()==='stat';this.textContent='Беру выбранное'}

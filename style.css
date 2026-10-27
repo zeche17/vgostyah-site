@@ -373,7 +373,7 @@ dialog button:hover{background:rgba(255,255,255,.3)}
 .ck-set input{margin-top:2px;width:18px;height:18px;accent-color:var(--em);flex:none}
 .ck-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .ck .btn{min-height:38px;padding:0 10px;font-size:14px;box-shadow:2px 2px 0 var(--umb)}
-#ckall{background:var(--sand)}
+#ckall{grid-column:1/-1;background:var(--sand)}
 @media(max-width:560px){.ck{left:10px;bottom:10px;width:calc(100vw - 20px)}}
 .topbar .pn{display:inline;gap:0}
 .topbar .pm{display:inline-block;gap:0}
