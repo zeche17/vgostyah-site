@@ -357,3 +357,6 @@ dialog button:hover{background:rgba(255,255,255,.3)}
 .x{top:12px;right:12px}.pv{left:12px;top:50%}.nx{right:12px;top:50%}
 
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+
+.pm{display:inline-block;padding:0 6px;border-radius:6px;background:rgba(214,177,102,.5);cursor:pointer;letter-spacing:.04em}
+.pm.on{padding:0;background:none;letter-spacing:0;cursor:inherit}

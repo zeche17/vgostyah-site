@@ -99,7 +99,7 @@ if(out.date){out.date.textContent=new Date().toLocaleDateString('ru-RU')}
 /* цели Яндекс Метрики */
 var done={};
 function goal(n,once){try{if(once&&done[n])return;done[n]=1;if(window.ym)ym(113790318,'reachGoal',n)}catch(e){}}
-document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a,button');if(!a)return;var h=a.getAttribute('href')||'';
+document.addEventListener('click',function(e){if(e.defaultPrevented)return;var a=e.target.closest&&e.target.closest('a,button');if(!a)return;var h=a.getAttribute('href')||'';
  if(h.indexOf('tel:')===0)goal('click_phone');
  else if(h.indexOf('t.me/')>-1)goal('click_telegram');
  else if(h.indexOf('wa.me/')>-1)goal('click_whatsapp');
@@ -109,10 +109,26 @@ document.addEventListener('click',function(e){var a=e.target.closest&&e.target.c
  else if(a.dataset&&a.dataset.intent==='testdrive')goal('click_testdrive');
  else if(a.id==='from-calc')goal('calc_to_form');
  if(a.closest&&a.closest('.zpanel')&&a.tagName==='A')goal('zone_photo_open',1)});
-var cb=$('#calc-box')||$('#r-list');
 $$('#calc input,#calc button,input[name=cams],#h-m,#h-p,#re-m,#re-p,#montage,#live,#first').forEach(function(n){n.addEventListener('change',function(){goal('calc_use',1)});n.addEventListener('click',function(){goal('calc_use',1)})});
 $$('.ztab').forEach(function(t){t.addEventListener('click',function(){goal('zone_tab',1)})});
 if(v)v.addEventListener('play',function(){goal('video_play',1)});
+
+
+/* на компьютере последние цифры номера скрыты до клика: считаем «показал номер» */
+if(window.matchMedia&&matchMedia('(hover:hover) and (pointer:fine)').matches){
+ var masked=$$('a[data-mask]'),shown=false;
+ masked.forEach(function(a){
+  var w=document.createTreeWalker(a,NodeFilter.SHOW_TEXT),n,hit=null;
+  while((n=w.nextNode())){if(/\d{2}-\d{2}\s*$/.test(n.nodeValue))hit=n}
+  if(!hit)return;
+  var m=hit.nodeValue.match(/^([\s\S]*\d{2}-)(\d{2})(\s*)$/);if(!m)return;
+  var sp=document.createElement('span');sp.className='pm';sp.setAttribute('data-d',m[2]);sp.textContent='••';
+  hit.nodeValue=m[1];hit.parentNode.insertBefore(sp,hit.nextSibling);
+  a.title='Нажмите, чтобы показать номер полностью';a.setAttribute('aria-label','Показать номер телефона полностью');
+  a.addEventListener('click',function(e){if(shown)return;e.preventDefault();reveal()})});
+ function reveal(){shown=true;$$('.pm').forEach(function(s){s.textContent=s.getAttribute('data-d');s.className='pm on'});
+  masked.forEach(function(a){a.removeAttribute('title');a.removeAttribute('aria-label')});goal('phone_reveal')}
+}
 
 /* заявка */
 var f=$('#lead'),status=$('#st'),intent=$('#intent'),sum=$('#sum');
