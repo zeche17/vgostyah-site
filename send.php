@@ -54,7 +54,8 @@ $body = implode("\n", $lines);
 
 $sent = false;
 
-// 1. Почта
+// 1. Почта: здесь вся заявка с контактами
+$sent = false;
 if (!empty($cfg['mail_to'])) {
     $from = $cfg['mail_from'] ?? ('noreply@' . ($_SERVER['HTTP_HOST'] ?? 'localhost'));
     $fromName = '=?UTF-8?B?' . base64_encode('Заявки с сайта «В гостях»') . '?=';
@@ -63,22 +64,22 @@ if (!empty($cfg['mail_to'])) {
     if (@mail($cfg['mail_to'], $subject, $body, $headers)) $sent = true;
 }
 
-// 2. Telegram
+// 2. Telegram: только уведомление без персональных данных (имени, телефона, комментария)
 if (!empty($cfg['tg_token']) && !empty($cfg['tg_chat'])) {
+    $note = $sent
+        ? "Новая заявка с сайта «В гостях»: $intentT.\nПодробности смотрите на почте."
+        : "Заявка с сайта «В гостях»: $intentT.\nПочта не отправилась, данные сохранены на хостинге (data/leads.log).";
     $url = 'https://api.telegram.org/bot' . $cfg['tg_token'] . '/sendMessage';
-    $data = http_build_query(['chat_id' => $cfg['tg_chat'], 'text' => $body, 'disable_web_page_preview' => 1]);
-    $resp = false;
+    $data = http_build_query(['chat_id' => $cfg['tg_chat'], 'text' => $note, 'disable_web_page_preview' => 1]);
     if (function_exists('curl_init')) {
         $ch = curl_init($url);
         curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_POSTFIELDS => $data, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 8, CURLOPT_CONNECTTIMEOUT => 5]);
-        $resp = curl_exec($ch);
+        curl_exec($ch);
         curl_close($ch);
     } else {
         $ctx = stream_context_create(['http' => ['method' => 'POST', 'header' => "Content-Type: application/x-www-form-urlencoded\r\n", 'content' => $data, 'timeout' => 8]]);
-        $resp = @file_get_contents($url, false, $ctx);
+        @file_get_contents($url, false, $ctx);
     }
-    $j = $resp ? json_decode($resp, true) : null;
-    if (is_array($j) && !empty($j['ok'])) $sent = true;
 }
 
 // 3. Резервный журнал (на случай, если почта и Telegram недоступны)
