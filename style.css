@@ -375,3 +375,6 @@ dialog button:hover{background:rgba(255,255,255,.3)}
 .ck .btn{min-height:38px;padding:0 10px;font-size:14px;box-shadow:2px 2px 0 var(--umb)}
 #ckall{grid-column:1/-1;background:var(--sand)}
 @media(max-width:560px){.ck{left:10px;bottom:10px;width:calc(100vw - 20px)}}
+.topbar .pn{display:inline;gap:0}
+.topbar .pm{display:inline-block;gap:0}
+.topbar .pm.on{display:inline}
