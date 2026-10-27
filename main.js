@@ -134,16 +134,16 @@ if(window.matchMedia&&matchMedia('(hover:hover) and (pointer:fine)').matches){
 var ck=$('#ck'),ckset=$('#ckset'),ckstat=$('#ckstat');
 function ckGet(){try{return localStorage.getItem('cks')}catch(e){return null}}
 function ckSave(v){try{localStorage.setItem('cks',v)}catch(e){}
- ck.hidden=true;ckset.hidden=true;$('#cksel').textContent='Выбрать';
+ ck.hidden=true;ckset.hidden=true;$('#cksel').textContent='Выберу сам';
  if(v==='all'||v==='stat'){if(window.loadMetrika)window.loadMetrika()}}
 if(ck){
  if(!ckGet())ck.hidden=false;
  $('#ckall').addEventListener('click',function(){ckSave('all')});
  $('#cknone').addEventListener('click',function(){ckSave('none')});
  $('#cksel').addEventListener('click',function(){
-  if(ckset.hidden){ckset.hidden=false;ckstat.checked=ckGet()==='all'||ckGet()==='stat';this.textContent='Сохранить выбор'}
+  if(ckset.hidden){ckset.hidden=false;ckstat.checked=ckGet()==='all'||ckGet()==='stat';this.textContent='Беру выбранное'}
   else ckSave(ckstat.checked?'stat':'none')});
- var op=$('#ckopen');if(op)op.addEventListener('click',function(e){e.preventDefault();ck.hidden=false;ckset.hidden=false;ckstat.checked=ckGet()==='all'||ckGet()==='stat';$('#cksel').textContent='Сохранить выбор'});
+ var op=$('#ckopen');if(op)op.addEventListener('click',function(e){e.preventDefault();ck.hidden=false;ckset.hidden=false;ckstat.checked=ckGet()==='all'||ckGet()==='stat';$('#cksel').textContent='Беру выбранное'});
 }
 
 /* заявка */
