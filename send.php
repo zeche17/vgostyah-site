@@ -36,7 +36,7 @@ $intents = ['shoot' => 'Съёмка в студии', 'testdrive' => 'Тест-
 $intentT = $intents[$intent] ?? 'Заявка';
 
 if ($name === '' || !preg_match('/^[\d\s+()\-]{6,30}$/', $phone)) out(false, 'Проверьте имя и телефон.');
-if (empty($_POST['agree'])) out(false, 'Нужно согласие на обработку данных.');
+if (empty($_POST['agree']) || empty($_POST['agree_policy'])) out(false, 'Отметьте согласие на обработку данных и принятие политики.');
 
 $lines = [
     'Новая заявка с сайта «В гостях»',
@@ -49,6 +49,7 @@ $lines = [
 ];
 if ($intent === 'shoot' && $calc !== '') $lines[] = 'Расчёт: ' . $calc;
 $lines[] = 'Комментарий: ' . ($msg ?: '—');
+$lines[] = 'Согласие на обработку ПДн и политика приняты: ' . date('d.m.Y H:i') . ' (МСК), редакция от 27.10.2026';
 $body = implode("\n", $lines);
 
 $sent = false;
