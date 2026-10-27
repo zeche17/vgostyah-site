@@ -122,8 +122,8 @@ if(window.matchMedia&&matchMedia('(hover:hover) and (pointer:fine)').matches){
   while((n=w.nextNode())){if(/\d{2}-\d{2}\s*$/.test(n.nodeValue))hit=n}
   if(!hit)return;
   var m=hit.nodeValue.match(/^([\s\S]*\d{2}-)(\d{2})(\s*)$/);if(!m)return;
-  var sp=document.createElement('span');sp.className='pm';sp.setAttribute('data-d',m[2]);sp.textContent='••';
-  hit.nodeValue=m[1];hit.parentNode.insertBefore(sp,hit.nextSibling);
+  var sp=document.createElement('span');sp.className='pm';sp.setAttribute('data-d',m[2]);sp.textContent='Посмотреть';
+  var wr=document.createElement('span');wr.className='pn';hit.parentNode.insertBefore(wr,hit);hit.nodeValue=m[1];wr.appendChild(hit);wr.appendChild(sp);
   a.title='Нажмите, чтобы показать номер полностью';a.setAttribute('aria-label','Показать номер телефона полностью');
   a.addEventListener('click',function(e){if(shown)return;e.preventDefault();reveal()})});
  function reveal(){shown=true;$$('.pm').forEach(function(s){s.textContent=s.getAttribute('data-d');s.className='pm on'});
