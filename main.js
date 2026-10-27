@@ -130,10 +130,21 @@ if(window.matchMedia&&matchMedia('(hover:hover) and (pointer:fine)').matches){
   masked.forEach(function(a){a.removeAttribute('title');a.removeAttribute('aria-label')});goal('phone_reveal')}
 }
 
-/* уведомление о cookie */
-var ck=$('#ck');
-if(ck){var seen=false;try{seen=localStorage.getItem('ck')==='1'}catch(e){}
- if(!seen){ck.hidden=false;$('#ckok').addEventListener('click',function(){ck.hidden=true;try{localStorage.setItem('ck','1')}catch(e){}})}}
+/* cookie: принять все / выбрать / отказаться; Метрика грузится только после согласия */
+var ck=$('#ck'),ckset=$('#ckset'),ckstat=$('#ckstat');
+function ckGet(){try{return localStorage.getItem('cks')}catch(e){return null}}
+function ckSave(v){try{localStorage.setItem('cks',v)}catch(e){}
+ ck.hidden=true;ckset.hidden=true;$('#cksel').textContent='Выбрать';
+ if(v==='all'||v==='stat'){if(window.loadMetrika)window.loadMetrika()}}
+if(ck){
+ if(!ckGet())ck.hidden=false;
+ $('#ckall').addEventListener('click',function(){ckSave('all')});
+ $('#cknone').addEventListener('click',function(){ckSave('none')});
+ $('#cksel').addEventListener('click',function(){
+  if(ckset.hidden){ckset.hidden=false;ckstat.checked=ckGet()==='all'||ckGet()==='stat';this.textContent='Сохранить выбор'}
+  else ckSave(ckstat.checked?'stat':'none')});
+ var op=$('#ckopen');if(op)op.addEventListener('click',function(e){e.preventDefault();ck.hidden=false;ckset.hidden=false;ckstat.checked=ckGet()==='all'||ckGet()==='stat';$('#cksel').textContent='Сохранить выбор'});
+}
 
 /* заявка */
 var f=$('#lead'),status=$('#st'),intent=$('#intent'),sum=$('#sum');

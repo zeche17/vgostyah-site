@@ -361,9 +361,15 @@ dialog button:hover{background:rgba(255,255,255,.3)}
 .pm{display:inline-block;padding:0 6px;border-radius:6px;background:rgba(214,177,102,.5);cursor:pointer;letter-spacing:.04em}
 .pm.on{padding:0;background:none;letter-spacing:0;cursor:inherit}
 
-.ck{position:fixed;left:16px;right:16px;bottom:16px;z-index:50;max-width:720px;margin:0 auto;display:flex;gap:16px;align-items:center;padding:14px 16px 14px 20px;background:var(--pamp);color:var(--umb);border:2px solid var(--umb);border-radius:20px;box-shadow:4px 4px 0 var(--umb)}
-.ck[hidden]{display:none}
-.ck p{margin:0;font-size:15px;line-height:1.4;flex:1}
+.ck{position:fixed;left:16px;right:16px;bottom:16px;z-index:50;max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:12px;padding:16px 20px;background:var(--pamp);color:var(--umb);border:2px solid var(--umb);border-radius:20px;box-shadow:4px 4px 0 var(--umb);max-height:calc(100vh - 32px);overflow:auto}
+.ck[hidden],.ck-set[hidden]{display:none}
+.ck p{margin:0;font-size:15px;line-height:1.4}
 .ck a{color:inherit;text-decoration:underline}
-.ck .btn{min-height:44px;padding:0 20px;font-size:16px;background:var(--sand);flex:none}
-@media(max-width:560px){.ck{flex-direction:column;align-items:stretch;gap:10px;left:10px;right:10px;bottom:10px}}
+.ck-set{display:grid;gap:10px;padding:12px 14px;background:var(--wh);border-radius:14px}
+.ck-set .cb{font-size:15px;font-weight:500}
+.ck-set small{display:block;font-weight:400;font-size:13px;opacity:.75}
+.ck-set input{margin-top:3px;width:20px;height:20px;accent-color:var(--em);flex:none}
+.ck-btns{display:flex;gap:10px;flex-wrap:wrap}
+.ck .btn{min-height:44px;padding:0 20px;font-size:16px;flex:1 1 auto}
+#ckall{background:var(--sand)}
+@media(max-width:560px){.ck{left:10px;right:10px;bottom:10px;padding:14px}.ck-btns{flex-direction:column}}
