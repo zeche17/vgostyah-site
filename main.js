@@ -95,9 +95,29 @@ $('#live').addEventListener('change',function(e){st.live=e.target.checked;render
 $('#first').addEventListener('change',function(e){st.first=e.target.checked;render()});
 if(out.date){out.date.textContent=new Date().toLocaleDateString('ru-RU')}
 
+
+/* цели Яндекс Метрики */
+var done={};
+function goal(n,once){try{if(once&&done[n])return;done[n]=1;if(window.ym)ym(113790318,'reachGoal',n)}catch(e){}}
+document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a,button');if(!a)return;var h=a.getAttribute('href')||'';
+ if(h.indexOf('tel:')===0)goal('click_phone');
+ else if(h.indexOf('t.me/')>-1)goal('click_telegram');
+ else if(h.indexOf('wa.me/')>-1)goal('click_whatsapp');
+ else if(h.indexOf('max.ru/')>-1)goal('click_max');
+ else if(h.indexOf('vk.ru/')>-1||h.indexOf('vk.com/')>-1)goal('click_vk');
+ else if(h.indexOf('yandex.ru/maps')>-1)goal('click_route');
+ else if(a.dataset&&a.dataset.intent==='testdrive')goal('click_testdrive');
+ else if(a.id==='from-calc')goal('calc_to_form');
+ if(a.closest&&a.closest('.zpanel')&&a.tagName==='A')goal('zone_photo_open',1)});
+var cb=$('#calc-box')||$('#r-list');
+$$('#calc input,#calc button,input[name=cams],#h-m,#h-p,#re-m,#re-p,#montage,#live,#first').forEach(function(n){n.addEventListener('change',function(){goal('calc_use',1)});n.addEventListener('click',function(){goal('calc_use',1)})});
+$$('.ztab').forEach(function(t){t.addEventListener('click',function(){goal('zone_tab',1)})});
+if(v)v.addEventListener('play',function(){goal('video_play',1)});
+
 /* заявка */
 var f=$('#lead'),status=$('#st'),intent=$('#intent'),sum=$('#sum');
 $('#ts').value=Date.now();
+f.addEventListener('focusin',function(){goal('form_start',1)});
 function setIntent(v){intent.value=v;
  if(v==='testdrive'){sum.hidden=false;sum.textContent='Тест-драйв: 30 минут в студии бесплатно. Напишите удобную дату, договоримся о времени.'}
  else if(v==='shoot'){render()}
@@ -108,7 +128,7 @@ $('#from-calc').addEventListener('click',function(){setIntent('shoot')});
 f.addEventListener('submit',function(e){
  e.preventDefault();var b=$('button[type=submit]',f);b.disabled=true;status.textContent='Отправляем…';
  fetch('send.php',{method:'POST',body:new FormData(f),headers:{Accept:'application/json'}}).then(function(r){return r.json()}).then(function(j){
-  if(j.ok){f.reset();$('#ts').value=Date.now();setIntent('shoot');status.textContent='';var o=$('#okmsg');o.hidden=false;f.hidden=true}
+  if(j.ok){goal('form_submit');if(intent.value==='testdrive')goal('form_testdrive');f.reset();$('#ts').value=Date.now();setIntent('shoot');status.textContent='';var o=$('#okmsg');o.hidden=false;f.hidden=true}
   else{status.textContent=j.error||'Не получилось отправить. Напишите нам в мессенджер или позвоните.'}b.disabled=false})
  .catch(function(){status.textContent='Не получилось отправить. Напишите нам в мессенджер или позвоните.';b.disabled=false})});
 /* маска телефона */
