@@ -378,3 +378,37 @@ dialog button:hover{background:rgba(255,255,255,.3)}
 .topbar .pn{display:inline;gap:0}
 .topbar .pm{display:inline-block;gap:0}
 .topbar .pm.on{display:inline}
+
+/* ---- внутренние страницы ---- */
+.crumbs{font-size:14px;margin:0 0 22px;opacity:.9}
+.crumbs ol{list-style:none;display:flex;flex-wrap:wrap;gap:4px 10px;padding:0;margin:0}
+.crumbs li+li:before{content:"›";margin-right:10px;opacity:.6}
+.crumbs a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.crumbs [aria-current]{opacity:.75}
+.phero{padding-top:clamp(28px,4vw,52px)}
+.phero h1{max-width:18ch}
+.phero .w{align-items:center}
+.pframe{margin:0;transform:rotate(1.5deg);max-width:520px;justify-self:center}
+.pframe img{width:100%;height:auto;display:block}
+.pintro .prose{max-width:760px;display:grid;gap:18px;margin-top:22px}
+.pintro h2{margin-bottom:6px}
+.cards3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:900px){.cards3{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.cards3{grid-template-columns:1fr}}
+.pprice .two{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(24px,5vw,72px);align-items:center}
+@media(max-width:900px){.pprice .two{grid-template-columns:1fr}}
+.plist{list-style:none;padding:8px 24px;margin:0}
+.plist li{display:flex;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px dashed rgba(40,40,38,.35);font-size:17px}
+.plist li:last-child{border-bottom:0}
+.plist b{white-space:nowrap}
+.faqlist{display:grid;gap:12px;max-width:820px;margin-top:28px}
+.prel h2{margin-bottom:28px}
+.relgrid,.svcgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;list-style:none;padding:0;margin:28px 0 0}
+.relgrid .card,.svcgrid .card{display:block;padding:24px;text-decoration:none;color:inherit;height:100%}
+.relgrid b,.svcgrid h3{display:block;font-size:22px;margin-bottom:8px}
+.relgrid span,.svcgrid p{font-size:16px}
+.svcgrid .more{display:inline-block;margin-top:14px;font-weight:600}
+.fnav-s{margin-top:8px}
+.fnav-s span{opacity:.7;margin-right:6px}
+.pframe figcaption{color:var(--umb)}
+.pprice p:last-child{margin-top:26px}

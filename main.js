@@ -73,7 +73,9 @@ function calc(){
  var total=sub-disc;
  return {rows:rows,total:total,text:rows.map(function(r){return r[0]+': '+(r[1]<0?'−':'')+rub(Math.abs(r[1]))}).join('; ')+'. Итого: '+rub(total)}
 }
+var hasCalc=!!$('#h-m');
 function render(){
+ if(!hasCalc)return;
  var c=calc();
  out.list.textContent='';
  c.rows.forEach(function(r){var li=document.createElement('li');if(r[2])li.className=r[2];var a=document.createElement('span'),b=document.createElement('span');a.textContent=r[0];b.textContent=(r[1]<0?'−':'')+rub(Math.abs(r[1]));li.appendChild(a);li.appendChild(b);out.list.appendChild(li)});
@@ -88,11 +90,13 @@ $$('input[name=cams]').forEach(function(i){i.addEventListener('change',function(
  if(st.cams>0){st.mcams=st.cams;var r=$('input[name=mcams][value="'+st.cams+'"]');if(r)r.checked=true}
  render()})});
 $$('input[name=mcams]').forEach(function(i){i.addEventListener('change',function(){st.mcams=+i.value;render()})});
+if(hasCalc){
 var bump=function(btn,key,min,max,d){$(btn).addEventListener('click',function(){st[key]=Math.max(min,Math.min(max,st[key]+d));render()})};
 bump('#h-m','hours',1,8,-1);bump('#h-p','hours',1,8,1);bump('#re-m','reels',0,30,-1);bump('#re-p','reels',0,30,1);
 $('#montage').addEventListener('change',function(e){st.montage=e.target.checked;$('#mwrap').hidden=!st.montage;render()});
 $('#live').addEventListener('change',function(e){st.live=e.target.checked;render()});
 $('#first').addEventListener('change',function(e){st.first=e.target.checked;render()});
+}
 if(out.date){out.date.textContent=new Date().toLocaleDateString('ru-RU')}
 
 
@@ -153,11 +157,11 @@ $('#ts').value=Date.now();
 f.addEventListener('focusin',function(){goal('form_start',1)});
 function setIntent(v){intent.value=v;
  if(v==='testdrive'){sum.hidden=false;sum.textContent='Тест-драйв: 30 минут в студии бесплатно. Напишите удобную дату, договоримся о времени.'}
- else if(v==='shoot'){render()}
+ else if(v==='shoot'){if(hasCalc)render();else sum.hidden=true}
  else{sum.hidden=true}}
 intent.addEventListener('change',function(){setIntent(intent.value)});
 $$('[data-intent]').forEach(function(a){a.addEventListener('click',function(){setIntent(a.dataset.intent)})});
-$('#from-calc').addEventListener('click',function(){setIntent('shoot')});
+var fc=$('#from-calc');if(fc)fc.addEventListener('click',function(){setIntent('shoot')});
 f.addEventListener('submit',function(e){
  e.preventDefault();var b=$('button[type=submit]',f);b.disabled=true;status.textContent='Отправляем…';
  fetch('send.php',{method:'POST',body:new FormData(f),headers:{Accept:'application/json'}}).then(function(r){return r.json()}).then(function(j){
@@ -174,5 +178,5 @@ if(ph){
  ph.addEventListener('keydown',function(e){if(e.key==='Backspace'&&ph.value.length<=3)e.preventDefault()});
  ph.addEventListener('paste',function(e){e.preventDefault();ph.value=fmt((e.clipboardData||window.clipboardData).getData('text'))});
 }
-setIntent('shoot');render();
+var qi=/[?&]intent=(\w+)/.exec(location.search);setIntent(qi&&$('#intent option[value="'+qi[1]+'"]')?qi[1]:'shoot');render();
 })();
