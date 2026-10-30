@@ -178,5 +178,26 @@ if(ph){
  ph.addEventListener('keydown',function(e){if(e.key==='Backspace'&&ph.value.length<=3)e.preventDefault()});
  ph.addEventListener('paste',function(e){e.preventDefault();ph.value=fmt((e.clipboardData||window.clipboardData).getData('text'))});
 }
+/* галерея зон: автосмена раз в 3 с, пауза при наведении и фокусе, выбор точками */
+$$('[data-gal]').forEach(function(g){
+ var imgs=$$('img',g),dots=$$('.gdots button',g),cap=$('figcaption',g),cur=0,t=null,hold=false,seen=true;
+ var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+ function show(i){cur=(i+imgs.length)%imgs.length;imgs.forEach(function(m,n){m.classList.toggle('on',n===cur)});dots.forEach(function(d,n){if(n===cur)d.setAttribute('aria-current','true');else d.removeAttribute('aria-current')});cap.textContent=imgs[cur].getAttribute('data-cap')}
+ function stop(){if(t){clearInterval(t);t=null}}
+ function go(){stop();if(reduce||hold||!seen||document.hidden)return;t=setInterval(function(){show(cur+1)},3000)}
+ dots.forEach(function(d,n){d.addEventListener('click',function(){show(n);goal('gallery_pick',1);hold=true;stop();clearTimeout(g._r);g._r=setTimeout(function(){hold=false;go()},8000)})});
+ g.addEventListener('mouseenter',function(){hold=true;stop()});
+ g.addEventListener('mouseleave',function(){hold=false;go()});
+ g.addEventListener('focusin',function(){hold=true;stop()});
+ g.addEventListener('focusout',function(){hold=false;go()});
+ document.addEventListener('visibilitychange',go);
+ if('IntersectionObserver' in window)new IntersectionObserver(function(e){seen=e[0].isIntersecting;go()}).observe(g);
+ go();
+});
+
+/* «Что вы получаете»: эквалайзер заполняется при появлении блока */
+var pw=$('.pwho');
+if(pw){if('IntersectionObserver' in window){var pio=new IntersectionObserver(function(e){if(e[0].isIntersecting){pw.classList.add('in');pio.disconnect()}},{threshold:.25});pio.observe(pw)}else pw.classList.add('in')}
+
 var qi=/[?&]intent=(\w+)/.exec(location.search);setIntent(qi&&$('#intent option[value="'+qi[1]+'"]')?qi[1]:'shoot');render();
 })();
