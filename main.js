@@ -195,9 +195,5 @@ $$('[data-gal]').forEach(function(g){
  go();
 });
 
-/* «Что вы получаете»: эквалайзер заполняется при появлении блока */
-var pw=$('.pwho');
-if(pw){if('IntersectionObserver' in window){var pio=new IntersectionObserver(function(e){if(e[0].isIntersecting){pw.classList.add('in');pio.disconnect()}},{threshold:.25});pio.observe(pw)}else pw.classList.add('in')}
-
 var qi=/[?&]intent=(\w+)/.exec(location.search);setIntent(qi&&$('#intent option[value="'+qi[1]+'"]')?qi[1]:'shoot');render();
 })();
