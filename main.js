@@ -164,7 +164,7 @@ $$('[data-intent]').forEach(function(a){a.addEventListener('click',function(){se
 var fc=$('#from-calc');if(fc)fc.addEventListener('click',function(){setIntent('shoot')});
 f.addEventListener('submit',function(e){
  e.preventDefault();var b=$('button[type=submit]',f);b.disabled=true;status.textContent='Отправляем…';
- fetch('send.php',{method:'POST',body:new FormData(f),headers:{Accept:'application/json'}}).then(function(r){return r.json()}).then(function(j){
+ fetch('/send.php',{method:'POST',body:new FormData(f),headers:{Accept:'application/json'}}).then(function(r){return r.json()}).then(function(j){
   if(j.ok){goal('form_submit');if(intent.value==='testdrive')goal('form_testdrive');f.reset();$('#ts').value=Date.now();setIntent('shoot');status.textContent='';var o=$('#okmsg');o.hidden=false;f.hidden=true}
   else{status.textContent=j.error||'Не получилось отправить. Напишите нам в мессенджер или позвоните.'}b.disabled=false})
  .catch(function(){status.textContent='Не получилось отправить. Напишите нам в мессенджер или позвоните.';b.disabled=false})});
