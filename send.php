@@ -1,4 +1,5 @@
 <?php
+// Совместимо с PHP 5.6+ (на хостинге сейчас 5.6).
 // Обработчик формы заявки: письмо на почту + уведомление в Telegram + резервная запись в журнал.
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -8,14 +9,14 @@ function out($ok, $err = '') {
     exit;
 }
 
-if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') out(false, 'Неверный запрос.');
+if ((isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '') !== 'POST') out(false, 'Неверный запрос.');
 
 $cfg = @include __DIR__ . '/config.php';
 if (!is_array($cfg)) out(false, 'Форма временно недоступна. Напишите нам в мессенджер.');
 
 // Защита от ботов: скрытое поле-ловушка и слишком быстрая отправка
 if (!empty($_POST['website'])) out(true);
-$ts = (int)($_POST['ts'] ?? 0);
+$ts = (int)(isset($_POST['ts']) ? $_POST['ts'] : 0);
 if ($ts > 0 && (time() * 1000 - $ts) < 2500) out(true);
 
 $clean = function ($k, $len) {
@@ -33,7 +34,7 @@ $msg     = $clean('msg', 1000);
 $calc    = $clean('calc', 600);
 $intent  = $clean('intent', 20);
 $intents = ['shoot' => 'Съёмка в студии', 'testdrive' => 'Тест-драйв, 30 минут бесплатно', 'ask' => 'Консультация'];
-$intentT = $intents[$intent] ?? 'Заявка';
+$intentT = isset($intents[$intent]) ? $intents[$intent] : 'Заявка';
 
 if ($name === '' || !preg_match('/^[\d\s+()\-]{6,30}$/', $phone)) out(false, 'Проверьте имя и телефон.');
 if (empty($_POST['agree']) || empty($_POST['agree_policy'])) out(false, 'Отметьте согласие на обработку данных и принятие политики.');
@@ -57,7 +58,7 @@ $sent = false;
 // 1. Почта: здесь вся заявка с контактами
 $sent = false;
 if (!empty($cfg['mail_to'])) {
-    $from = $cfg['mail_from'] ?? ('noreply@' . ($_SERVER['HTTP_HOST'] ?? 'localhost'));
+    $from = !empty($cfg['mail_from']) ? $cfg['mail_from'] : ('noreply@' . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost'));
     $fromName = '=?UTF-8?B?' . base64_encode('Заявки с сайта «В гостях»') . '?=';
     $headers = "From: $fromName <$from>\r\nReply-To: $from\r\nContent-Type: text/plain; charset=utf-8\r\n";
     $subject = '=?UTF-8?B?' . base64_encode('Заявка с сайта «В гостях»: ' . $intentT) . '?=';
