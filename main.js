@@ -151,6 +151,13 @@ if(ck){
  var op=$('#ckopen');if(op)op.addEventListener('click',function(e){e.preventDefault();ck.hidden=false;ckset.hidden=false;ckstat.checked=ckGet()==='all'||ckGet()==='stat';$('#cksel').textContent='Беру выбранное'});
 }
 
+/* источник визита: UTM и реферер, запоминаем при входе */
+var SRC='vg_src';
+function srcGet(){try{return JSON.parse(localStorage.getItem(SRC))||{}}catch(e){return {}}}
+(function(){try{var q=new URLSearchParams(location.search),u=[];
+ ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','yclid','gclid'].forEach(function(k){var v=q.get(k);if(v)u.push(k+'='+v)});
+ var r=document.referrer,ext=r&&r.indexOf(location.host)<0,old=srcGet();
+ if(u.length||(ext&&!old.land))localStorage.setItem(SRC,JSON.stringify({utm:u.join('&'),ref:ext?r:'',land:location.href.split('#')[0]}))}catch(e){}})();
 /* заявка */
 var f=$('#lead'),status=$('#st'),intent=$('#intent'),sum=$('#sum');
 $('#ts').value=Date.now();
@@ -164,7 +171,8 @@ $$('[data-intent]').forEach(function(a){a.addEventListener('click',function(){se
 var fc=$('#from-calc');if(fc)fc.addEventListener('click',function(){setIntent('shoot')});
 f.addEventListener('submit',function(e){
  e.preventDefault();var b=$('button[type=submit]',f);b.disabled=true;status.textContent='Отправляем…';
- fetch('/send.php',{method:'POST',body:new FormData(f),headers:{Accept:'application/json'}}).then(function(r){return r.json()}).then(function(j){
+ var fd=new FormData(f),so=srcGet();fd.append('page',location.href.split('#')[0]);fd.append('utm',so.utm||'');fd.append('ref',so.ref||'');fd.append('land',so.land||'');
+ fetch('/send.php',{method:'POST',body:fd,headers:{Accept:'application/json'}}).then(function(r){return r.json()}).then(function(j){
   if(j.ok){goal('form_submit');if(intent.value==='testdrive')goal('form_testdrive');f.reset();$('#ts').value=Date.now();setIntent('shoot');status.textContent='';var o=$('#okmsg');o.hidden=false;f.hidden=true}
   else{status.textContent=j.error||'Не получилось отправить. Напишите нам в мессенджер или позвоните.'}b.disabled=false})
  .catch(function(){status.textContent='Не получилось отправить. Напишите нам в мессенджер или позвоните.';b.disabled=false})});

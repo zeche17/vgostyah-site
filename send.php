@@ -33,6 +33,10 @@ $date    = $clean('date', 20);
 $msg     = $clean('msg', 1000);
 $calc    = $clean('calc', 600);
 $intent  = $clean('intent', 20);
+$page    = $clean('page', 500);
+$utm     = $clean('utm', 500);
+$ref     = $clean('ref', 500);
+$land    = $clean('land', 500);
 $intents = ['shoot' => 'Съёмка в студии', 'testdrive' => 'Тест-драйв, 30 минут бесплатно', 'ask' => 'Консультация'];
 $intentT = isset($intents[$intent]) ? $intents[$intent] : 'Заявка';
 
@@ -51,7 +55,16 @@ $lines = [
 if ($intent === 'shoot' && $calc !== '') $lines[] = 'Расчёт: ' . $calc;
 $lines[] = 'Комментарий: ' . ($msg ?: '—');
 $lines[] = 'Согласие на обработку ПДн и политика приняты: ' . date('d.m.Y H:i') . ' (МСК), редакция от 27.10.2026';
+$lines[] = '';
+$lines[] = 'Страница заявки: ' . ($page ?: '—');
+$lines[] = 'UTM: ' . ($utm ?: '—');
+if ($land !== '' && $land !== $page) $lines[] = 'Страница входа: ' . $land;
+if ($ref !== '') $lines[] = 'Откуда пришёл: ' . $ref;
 $body = implode("\n", $lines);
+// Для Telegram: всё, кроме имени и телефона
+$tgLines = array_values(array_filter($lines, function ($l) {
+    return strpos($l, 'Имя: ') !== 0 && strpos($l, 'Телефон: ') !== 0 && strpos($l, 'Согласие на обработку') !== 0;
+}));
 
 $sent = false;
 
@@ -67,9 +80,9 @@ if (!empty($cfg['mail_to'])) {
 
 // 2. Telegram: только уведомление без персональных данных (имени, телефона, комментария)
 if (!empty($cfg['tg_token']) && !empty($cfg['tg_chat'])) {
-    $note = $sent
-        ? "Новая заявка с сайта «В гостях»: $intentT.\nПодробности смотрите на почте."
-        : "Заявка с сайта «В гостях»: $intentT.\nПочта не отправилась, данные сохранены на хостинге (data/leads.log).";
+    $note = implode("\n", $tgLines) . "\n\n" . ($sent
+        ? 'Имя и телефон — на почте.'
+        : 'Почта не отправилась! Имя и телефон — на хостинге: data/leads.csv');
     $url = 'https://api.telegram.org/bot' . $cfg['tg_token'] . '/sendMessage';
     $data = http_build_query(['chat_id' => $cfg['tg_chat'], 'text' => $note, 'disable_web_page_preview' => 1]);
     if (function_exists('curl_init')) {
@@ -83,7 +96,24 @@ if (!empty($cfg['tg_token']) && !empty($cfg['tg_chat'])) {
     }
 }
 
-// 3. Резервный журнал (на случай, если почта и Telegram недоступны)
+// 3. Дубль в таблицу data/leads.csv (открывается в Excel / Google Таблицах)
+$csvFile = __DIR__ . '/data/leads.csv';
+if (!is_dir(__DIR__ . '/data')) @mkdir(__DIR__ . '/data', 0750, true);
+$isNew = !file_exists($csvFile);
+$fh = @fopen($csvFile, 'a');
+if ($fh) {
+    if (flock($fh, LOCK_EX)) {
+        if ($isNew) {
+            fwrite($fh, "\xEF\xBB\xBF");
+            fputcsv($fh, ['Дата', 'Что нужно', 'Имя', 'Телефон', 'Как связаться', 'Желаемая дата', 'Расчёт', 'Комментарий', 'Страница заявки', 'UTM', 'Страница входа', 'Откуда пришёл', 'Почта ушла'], ';', '"', '\\');
+        }
+        fputcsv($fh, [date('d.m.Y H:i'), $intentT, $name, $phone, $contact, $date, $calc, $msg, $page, $utm, $land, $ref, $sent ? 'да' : 'нет'], ';', '"', '\\');
+        flock($fh, LOCK_UN);
+    }
+    fclose($fh);
+}
+
+// 4. Резервный журнал (на случай, если почта и Telegram недоступны)
 $dir = __DIR__ . '/data';
 if (!is_dir($dir)) @mkdir($dir, 0750, true);
 @file_put_contents($dir . '/leads.log', '[' . date('Y-m-d H:i:s') . "]\n" . $body . "\n\n", FILE_APPEND | LOCK_EX);
