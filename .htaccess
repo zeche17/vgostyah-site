@@ -1,9 +1,9 @@
 AddType font/woff .woff
 RewriteEngine On
-# Один адрес сайта: https и без www
+# Один адрес сайта: https, без www, со старого в-гостях.рф — на новый домен
 RewriteCond %{HTTPS} !=on [OR]
-RewriteCond %{HTTP_HOST} ^www\. [NC]
-RewriteRule ^ https://xn----ctbe8bpgv3f.xn--p1ai%{REQUEST_URI} [L,R=301]
+RewriteCond %{HTTP_HOST} !^studiya-podcast-rostov\.ru$ [NC]
+RewriteRule ^ https://studiya-podcast-rostov.ru%{REQUEST_URI} [L,R=301]
 
 DirectoryIndex index.html index.php
 AddDefaultCharset UTF-8
